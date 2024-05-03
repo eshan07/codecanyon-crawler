@@ -50,7 +50,7 @@ class SaleController extends Controller
 
 // Paginate the data
         $page = request()->has('page') ? request('page') : 1;
-        $perPage = 12; // Number of items per page
+        $perPage = 10; // Number of items per page
 
 // Slice the collection to get the items for the current page
         $currentPageItems = $salesByDate->slice(($page - 1) * $perPage, $perPage);

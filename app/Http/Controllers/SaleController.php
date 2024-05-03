@@ -8,13 +8,14 @@ use App\Models\SaleHistory;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Symfony\Component\DomCrawler\Crawler;
 
 class SaleController extends Controller
 {
     public function index()
     {
-//        $this->syncData();
         // Get date-wise sales from the sales table
         $sales = Sale::with('project')
             ->selectRaw('DATE(created_at) as date, SUM(sales_count) as sales_total, SUM(new_sale_count) as new_sale, SUM(refund_count) as refund_count' )
@@ -47,7 +48,23 @@ class SaleController extends Controller
             ];
         });
 
-        return view('total_sale', compact('salesByDate'));
+// Paginate the data
+        $page = request()->has('page') ? request('page') : 1;
+        $perPage = 12; // Number of items per page
+
+// Slice the collection to get the items for the current page
+        $currentPageItems = $salesByDate->slice(($page - 1) * $perPage, $perPage);
+
+// Create a paginator instance
+        $salesByDatePaginated = new LengthAwarePaginator(
+            $currentPageItems, // Items for the current page
+            $salesByDate->count(), // Total number of items
+            $perPage, // Items per page
+            $page, // Current page
+            ['path' => \Illuminate\Support\Facades\Request::url(), 'query' => \Illuminate\Support\Facades\Request::query()] // Additional parameters
+        );
+
+        return view('total_sale', compact('salesByDatePaginated'));
     }
 
     public function projectWiseData($date)

@@ -33,7 +33,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach ($salesByDate as $sale)
+            @foreach ($salesByDatePaginated as $sale)
                 <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
                     <td class="px-4 py-2 text-blue-600 hover:underline cursor-pointer" onclick="navigateTo('{{ route('project-wise-data', ['date' => $sale['date']]) }}')">{{ $sale['date'] }}</td>
                     <td class="px-4 py-2">{{ $sale['total_sale'] }}</td>
@@ -44,6 +44,11 @@
             @endforeach
             </tbody>
         </table>
+
+        <!-- Pagination Links -->
+        <div class="mt-4">
+            {{ $salesByDatePaginated->links() }}
+        </div>
         <!-- Refresh Button -->
         <div class="flex justify-end mt-4">
             <button onclick="navigateTo('{{ route('sync-data') }}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">

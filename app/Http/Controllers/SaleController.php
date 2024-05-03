@@ -52,6 +52,9 @@ class SaleController extends Controller
         $page = request()->has('page') ? request('page') : 1;
         $perPage = 10; // Number of items per page
 
+// Sort the collection by date in descending order (latest first)
+        $salesByDate = $salesByDate->sortByDesc('date');
+
 // Slice the collection to get the items for the current page
         $currentPageItems = $salesByDate->slice(($page - 1) * $perPage, $perPage);
 
